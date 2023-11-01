@@ -1,0 +1,35 @@
+import json
+from typing import List, Tuple, Any
+
+
+class GSFunction:
+
+    def __init__(self, json_file_path: str):
+        self.json_file_path = json_file_path
+
+    def open_file(self) -> json:
+        with open(self.json_file_path, 'r', encoding='utf-8') as file:
+            return json.load(file)
+
+    # returns a list of all found pair key=value for the passed key
+    def selecting_values_by_key(self, key: str) -> list[tuple[str, Any]]:
+        return [(key, item.get(key)) for item in self.open_file() if item.get(key)]
+
+    # returns a list of all dictionaries that contain the searched pair <key=value>
+    def selecting_dicts_by_tuple(self, data: tuple) -> list[dict]:
+        return [item for item in self.open_file() if item[data[0]] == data[1]]
+
+
+
+# json converter for Google sheets (matrix)
+def json_converter(matrix: list[list[str]]) -> list[dict]:
+    id = 0
+    data = []
+    for num, values in enumerate(matrix):
+        if not num:
+            keys = ['id'] + values[:9]
+            continue
+        data.append(dict(zip(keys, [id] + values[:9])))
+        id += 1
+    return data
+
