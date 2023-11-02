@@ -5,14 +5,17 @@ from aiogram.filters.command import Command
 import config
 from functions import GSFunction, unique_names
 from murkups import ikb_categories, ikb_brand_names, ikb_what_next
+import subprocess
 
+
+subprocess.Popen(["python", "update_data.py"])
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher(skip_updates=True)
 
 
-gs_function = GSFunction('google_data.json')
+gs_function = GSFunction('data.json')
 
 
 @dp.message(Command("start"))
