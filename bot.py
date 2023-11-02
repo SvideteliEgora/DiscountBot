@@ -1,3 +1,7 @@
+import threading
+import time
+import schedule
+from update_data import update_data
 import logging
 import asyncio
 from aiogram import Bot, Dispatcher, types, F
@@ -5,10 +9,7 @@ from aiogram.filters.command import Command
 import config
 from functions import GSFunction, unique_names
 from murkups import ikb_categories, ikb_brand_names, ikb_what_next
-import subprocess
 
-
-subprocess.Popen(["python", "update_data.py"])
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.TOKEN)
@@ -39,9 +40,7 @@ async def cb_category(callback: types.CallbackQuery) -> None:
     key = 'Категория'
     value = callback.data.replace('category_', '')
     gs_data = gs_function.selecting_dicts_by_tuple((key, value))
-    print(gs_data)
     brand_names = unique_names([item.get('Торговая марка') for item in gs_data])
-    print(brand_names)
     await callback.message.edit_text('Выбирайте 🥰', reply_markup=ikb_brand_names(brand_names))
 
 
@@ -65,7 +64,18 @@ async def cb_brand_name(callback: types.CallbackQuery) -> None:
     await callback.message.answer(text='Куда отправимся за скидками дальше?', reply_markup=ikb_what_next(category))
 
 
+def update_data_periodically():
+    schedule.every(20).seconds.do(update_data)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
 async def main():
+    update_thread = threading.Thread(target=update_data_periodically)
+    update_thread.start()
+
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
