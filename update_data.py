@@ -13,5 +13,4 @@ def update_data() -> None:
 
     with open("data.json", "w", encoding="UTF-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    print('прошло 20 сек')
 

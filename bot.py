@@ -14,8 +14,6 @@ from murkups import ikb_categories, ikb_brand_names, ikb_what_next
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher(skip_updates=True)
-
-
 gs_function = GSFunction('data.json')
 
 
