@@ -1,8 +1,8 @@
 import json
+from aiogram import types
 
 
 class GSFunction:
-
     def __init__(self, json_file_path: str):
         self.json_file_path = json_file_path
 
@@ -38,3 +38,10 @@ def unique_names(names: list | tuple | set) -> list:
         if name not in unique_names_list:
             unique_names_list.append(name)
     return unique_names_list
+
+
+def update_statistics(statistics_data: dict, section: str, callback: types.CallbackQuery) -> None:
+    if statistics_data.get(section):
+        statistics_data[section].append(callback.message.from_user.id)
+    else:
+        statistics_data[section] = [callback.message.from_user.id]
